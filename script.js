@@ -178,7 +178,7 @@ $arcgis
              * ================================================================= */
 
             const IMAGERY_ZOOM =
-    12;
+    13;
 
 console.log(
     "SCRIPT TEST: IMAGERY_ZOOM =",
@@ -355,7 +355,7 @@ function updateBasemapForZoom( zoom ) {
     }
 
     const IMAGERY_ZOOM =
-        12;
+        13;
 
     console.log(
         "ZOOM SWITCH:",
@@ -1381,6 +1381,44 @@ function getCustomLandmarkPrompt(
 
     return null;
 }
+         function getCustomImagePosition( landmark ) {
+    const positions =
+        CONFIG.customImagePositions || {};
+
+    const name =
+        getLandmarkName(
+            landmark
+        );
+
+    const normalizedName =
+        String(
+            name || ""
+        )
+            .trim()
+            .toLowerCase();
+
+    for (
+        const [ key, value ] of Object.entries(
+            positions
+        )
+    ) {
+        const normalizedKey =
+            String(
+                key || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        if (
+            normalizedKey ===
+            normalizedName
+        ) {
+            return value;
+        }
+    }
+
+    return null;
+}
             function getLandmarkPhoto(
                 feature
             ) {
@@ -2069,6 +2107,10 @@ console.log(
 );
 
 const imageUrl = getLandmarkPhoto( landmark );
+             const imagePosition =
+    getCustomImagePosition(
+        landmark
+    );
              
 updateFindLandmarkTextVisibility();
 
@@ -2131,7 +2173,8 @@ if ( $("landmark-name") ) {
                                 );
                             }
                         };
-
+imageElements.image.style.objectPosition =
+    imagePosition || "";
                     imageElements.image.src =
                         imageUrl;
 
