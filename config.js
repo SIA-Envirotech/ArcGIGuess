@@ -34,9 +34,14 @@ window.ARCGIGUESS_CONFIG = {
     shuffleLandmarks: true,
 
     // Atļaut pabeigt spēli ātrāk
-    allowFinishEarly: false,
-   customLandmarkPrompts: {
-  
+allowFinishEarly: false,
+
+customLandmarkPrompts: {
+
+},
+
+customImagePositions: {
+    "Jaunākā UNESCO Pasaules mantojuma vieta Latvijā": "center 80%",
 },
     /* -------------------------------------------------------------------------
      * 3. SCORING
@@ -57,7 +62,7 @@ window.ARCGIGUESS_CONFIG = {
     },
     customScoringRules: {
     "Rīgas Brāļu kapi": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
@@ -68,51 +73,51 @@ window.ARCGIGUESS_CONFIG = {
 
     "Lībava": {
         fullScoreBufferMeters: 5000,
-        penaltyStepMeters: 1000,
+        penaltyStepMeters: 500,
     },
 
     "Jaunākā UNESCO Pasaules mantojuma vieta Latvijā": {
         fullScoreBufferMeters: 5000,
-        penaltyStepMeters: 1000,
+        penaltyStepMeters: 500,
     },
 
     "Vecākais dabas rezervāts Latvijā (Moricsala)": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Rundāles pils": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Aglonas bazilika": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Āraišu ezerpils": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Staburags": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Strūves ģeodēziskā loka UNESCO punkts “Sestu kalns”": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Latvijas tālākais austrumu punkts “Austras koks”": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Ziemassvētku kauju muzejs": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
@@ -147,11 +152,11 @@ window.ARCGIGUESS_CONFIG = {
                     "Laipni lūdzam spēlē <br>“Vietas, ko atcerēties!”",
 
                 welcomeDesc:
-                    "Pārbaudi sevi! Mēs parādīsim kādas zīmīgas vietas nosaukumu un attēlu – vai Tu vari to atrast Latvijas kartē?<br><br>{scoringSummary}<br><br><strong>Aktīvākajām skolām ir iespēja iegūt balvu, savukārt citiem – lieliska iespēja iepazīt Latviju!</strong>",
+                    "Novembrī tiek atzīmēta ĢIS diena! Svinēsim to kopā! Pārbaudi sevi un atrodi nosauktās vietas Latvijas kartē!<br><br>{scoringSummary}<br><br><strong>Ja esi skolēns – pēc spēles pabeigšanas iesniedz rezultātus, aizpildot anketu. Aktīvākās klases saņems sveicienu no Envirotech.<br><br>Sveiciens valsts svētku un ĢIS dienas mēnesī!</strong>",
 
 
                scoringSummaryTemplate:
-    "<strong>Atzīmē savu minējumu un nopelni punktus!</strong><br>Precīzs minējums dos <strong>{points} punktus</strong>.<br>Par katriem {bucket} m prom no precīzās atrašanās vietas tiks atņemts {penalty} punkts.",
+    "<strong>Atzīmē savu minējumu un nopelni punktus!</strong><br>Ja atradīsi vietu precīzi vai Tavs minējums atradīsies līdz 5 km attālumā no objekta – saņemsi <strong>{points} punktus!</strong><br>Par katriem {bucket} m tālāk - tiks atņemts {penalty} punkts.",
 
 startButton:
     "Sākt spēli",
@@ -192,7 +197,7 @@ startButton:
 },
 
                 incorrectMessage:
-                    "Tu biji <strong>{distance} m</strong> attālumā no precīzās vietas. Tu nopelnīji <strong>{roundScore} punktus</strong>. Šī ir precīzā atrašanās vieta.",
+                    "Tavs minējums ir <strong>{distance} m</strong> attālumā no precīzās vietas. Tu nopelnīji <strong>{roundScore} punktus</strong>. Šī ir precīzā atrašanās vieta.",
 
                 nextButton:
                     "Nākamā vieta",
@@ -212,7 +217,7 @@ startButton:
                     "Paldies par piedalīšanos!",
 
                 finalScoreText:
-                    "Lūk, tavi rezultāti:",
+                    "Lūk, Tavi rezultāti:",
 
                 totalScoreLabel:
                     "Kopējais punktu skaits",
