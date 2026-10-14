@@ -98,10 +98,17 @@ body,
 }
 
 .btn-confirm {
-    background-color: #84ae5e;
+    background-color: #a6c48a;
 }
 .btn-confirm:hover {
-    background-color: #6f9b4d;
+    background-color: #84ae5e;
+}
+#submit-score-button {
+    background-color: #e66f50 !important;
+}
+
+#submit-score-button:hover {
+    background-color: #cf5f43 !important;
 }
 
 /* Landmark image (shown in the game panel) */
@@ -123,4 +130,38 @@ body,
     #game-over-panel .grid {
         grid-template-columns: 1fr !important; /* Force 1 column */
     }
+}
+
+/* Game over result blocks */
+#game-over-panel .bg-blue-100 {
+    background-color: #79786b !important;
+}
+
+#game-over-panel .bg-green-100 {
+    background-color: #abaa93 !important;
+}
+
+#game-over-panel .bg-amber-100 {
+    background-color: #c7ccb2 !important;
+}
+
+/* Game over result block text */
+#game-over-panel #total-score-label,
+#game-over-panel #total-score,
+#game-over-panel #accuracy-label,
+#game-over-panel #accuracy,
+#game-over-panel #found-label,
+#game-over-panel #found-count {
+    color: #ffffff !important;
+}
+
+#landmark-name {
+    color: #397d68 !important;
+}
+#landmark-name {
+    color: #397d68 !important;
+}
+#game-over-panel #found-label,
+#game-over-panel #found-count {
+    color: #1f2937 !important;
 }
