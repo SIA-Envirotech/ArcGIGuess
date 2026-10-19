@@ -165,3 +165,6 @@ body,
 #game-over-panel #found-count {
     color: #1f2937 !important;
 }
+#confirm-button {
+    color: #000000 !important;
+}
