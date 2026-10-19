@@ -1,7 +1,7 @@
  /* =============================================================================
  * ArcGIGuess — Game logic
  * =============================================================================
- * Pazudusī Latvija — Atrodi vietu kartē
+ * Vietas, ko atcerēties
  * ============================================================================= */
 
 $arcgis
@@ -30,16 +30,12 @@ $arcgis
             /* =================================================================
              * CONFIG
              * ================================================================= */
-
             const CONFIG =
                 window.ARCGIGUESS_CONFIG || {};
-
             const LEADERBOARD =
                 CONFIG.leaderboard || {};
-
             const $ = (id) =>
                 document.getElementById(id);
-
             const mapEl =
                 document.querySelector(
                     "arcgis-map"
@@ -96,9 +92,7 @@ $arcgis
 
             const LANGUAGES =
                 CONFIG.languages || [];
-
             const LANG_BY_CODE = {};
-
             LANGUAGES.forEach(
                 (lang) => {
                     LANG_BY_CODE[lang.code] =
@@ -108,7 +102,6 @@ $arcgis
 
             const DEFAULT_LANG =
                 LANGUAGES[0];
-
             let currentLanguage =
                 DEFAULT_LANG
                     ? DEFAULT_LANG.code
@@ -120,56 +113,41 @@ $arcgis
 
             let gameState =
                 "LOADING";
-
             let landmarkPool =
                 [];
-
             let allLandmarks =
                 [];
-
             let currentLandmarkIndex =
                 0;
-
             let totalScore =
                 0;
-
             let accuracyTracker =
                 [];
-
             let clickedPoint =
                 null;
-
             let currentRoundHasCustomPrompt =
                 false;
-
             let webmap =
                 null;
-
             let landmarksLayer =
                 null;
-
             let clicksEnabled =
                 false;
-
             let finishEarlyArmed =
                 false;
-
             let finishEarlyTimer =
                 null;
-
+         
             /* =================================================================
              * PIN
              * ================================================================= */
 
             const PIN_IMAGE =
                 "./assets/pin.svg";
-
             const PIN_WIDTH =
                 28;
-
             const PIN_HEIGHT =
                 42;
-
             const PIN_REST_YOFFSET =
                 PIN_HEIGHT / 2;
 
@@ -178,27 +156,25 @@ $arcgis
              * ================================================================= */
 
             const IMAGERY_ZOOM =
-    13;
-
-console.log(
-    "SCRIPT TEST: IMAGERY_ZOOM =",
-    IMAGERY_ZOOM
+            13;
+            console.log(
+            "SCRIPT TEST: IMAGERY_ZOOM =",
+            IMAGERY_ZOOM
 );
-const CUSTOM_VECTOR_BASEMAP_ITEM_ID = "190e6f6949e44b5295685b48e6fe0a84";
+            const CUSTOM_VECTOR_BASEMAP_ITEM_ID = "190e6f6949e44b5295685b48e6fe0a84";
             let currentBasemapType =
                 null;
-
             let basemapSwitchingReady =
                 false;
-         /* =================================================================
- * SPECIAL SCORING
- * ================================================================= */
+           /* =================================================================
+            * SPECIAL SCORING
+            * ================================================================= */
 
-const BUFFERED_SCORING_LANDMARKS =
+            const BUFFERED_SCORING_LANDMARKS =
     [
-        "Staburags",
-        "Ventas rumba",
-        "Aglonas bazilika"
+            "Staburags",
+            "Ventas rumba",
+            "Aglonas bazilika"
     ];
 
             /* =================================================================
@@ -206,39 +182,33 @@ const BUFFERED_SCORING_LANDMARKS =
              * ================================================================= */
 
             function createBasemaps() {
-
                 console.log(
                     "Creating basemaps..."
                 );
-
                 console.log(
                     "Using ArcGIS Online basemap IDs."
                 );
             }
 
-async function setOpenStreetMap() {
-
-    if (
-        !mapEl ||
-        !mapEl.map
+            async function setOpenStreetMap() {
+                 if (
+                 !mapEl ||
+                 !mapEl.map
     ) {
-        return;
+                 return;
     }
 
-    const fallbackBasemap =
-        Basemap.fromId(
-            "osm"
+            const fallbackBasemap =
+                 Basemap.fromId(
+                 "osm"
         );
 
-    if (fallbackBasemap) {
-
-        mapEl.map.basemap =
-            fallbackBasemap;
-
-        currentBasemapType =
+           if (fallbackBasemap) {
+           mapEl.map.basemap =
+           fallbackBasemap;
+           currentBasemapType =
             "osm";
-
-        console.log(
+           console.log(
             "BASEMAP -> Fallback OpenStreetMap first"
         );
     }
@@ -251,7 +221,6 @@ async function setOpenStreetMap() {
                     id: CUSTOM_VECTOR_BASEMAP_ITEM_ID
                 }
             });
-
         const customBasemap =
             new Basemap({
                 baseLayers: [
@@ -260,13 +229,10 @@ async function setOpenStreetMap() {
                 title: "Custom Vector Style",
                 id: "custom-vector-style"
             });
-
         mapEl.map.basemap =
             customBasemap;
-
         currentBasemapType =
             "osm";
-
         console.log(
             "BASEMAP -> Custom Vector Style"
         );
@@ -279,13 +245,10 @@ async function setOpenStreetMap() {
         );
 
         if (fallbackBasemap) {
-
             mapEl.map.basemap =
                 fallbackBasemap;
-
             currentBasemapType =
                 "osm";
-
             console.log(
                 "BASEMAP -> Fallback OpenStreetMap after error"
             );
@@ -293,7 +256,6 @@ async function setOpenStreetMap() {
     }
 }
             function setWorldImagery() {
-
                 if (
                     !mapEl ||
                     !mapEl.map
@@ -302,33 +264,24 @@ async function setOpenStreetMap() {
                 }
 
                 try {
-
                     const basemap =
                         Basemap.fromId(
                             "hybrid"
                         );
-
                     if (!basemap) {
-
                         console.error(
                             "ArcGIS Online World Hybrid basemap could not be created."
                         );
-
                         return;
                     }
-
                     mapEl.map.basemap =
                         basemap;
-
                     currentBasemapType =
                         "imagery";
-
                     console.log(
                         "BASEMAP -> Imagery Hybrid"
                     );
-
                 } catch (error) {
-
                     console.error(
                         "Imagery Hybrid basemap error:",
                         error
@@ -337,7 +290,6 @@ async function setOpenStreetMap() {
             }
 
 function updateBasemapForZoom( zoom ) {
-
     if (
         !mapEl ||
         !mapEl.map ||
@@ -345,7 +297,6 @@ function updateBasemapForZoom( zoom ) {
     ) {
         return;
     }
-
     if (
         typeof zoom !== "number" ||
         !Number.isFinite(zoom) ||
@@ -353,10 +304,8 @@ function updateBasemapForZoom( zoom ) {
     ) {
         return;
     }
-
     const IMAGERY_ZOOM =
         13;
-
     console.log(
         "ZOOM SWITCH:",
         "zoom =",
@@ -366,56 +315,41 @@ function updateBasemapForZoom( zoom ) {
         "currentBasemapType =",
         currentBasemapType
     );
-
     if ( zoom < IMAGERY_ZOOM ) {
-
         console.log(
             "BASEMAP BRANCH -> CUSTOM"
         );
-
         if ( currentBasemapType !== "osm" ) {
             setOpenStreetMap().catch(console.error);
         }
-
         return;
     }
-
     console.log(
         "BASEMAP BRANCH -> IMAGERY"
     );
-
     if ( currentBasemapType !== "imagery" ) {
         setWorldImagery();
     }
 }
             function setupBasemapSwitching() {
-
                 if (!mapEl) {
-
                     console.error(
                         "Basemap: map element not found."
                     );
-
                     return;
                 }
-
                 if (!mapEl.view) {
-
                     console.error(
                         "Basemap: map view not ready."
                     );
-
                     return;
                 }
-
                 console.log(
                     "Setting up basemap switching..."
                 );
-
 setOpenStreetMap().catch(console.error);
                 const waitForZoom =
                     () => {
-
                         if (
                             !mapEl.view
                         ) {
@@ -423,13 +357,10 @@ setOpenStreetMap().catch(console.error);
                                 waitForZoom,
                                 300
                             );
-
                             return;
                         }
-
                         const zoom =
                             mapEl.view.zoom;
-
                         console.log(
                             "Current zoom:",
                             zoom
@@ -443,34 +374,27 @@ setOpenStreetMap().catch(console.error);
                                 waitForZoom,
                                 300
                             );
-
                             return;
                         }
-
                         basemapSwitchingReady =
                             true;
-
                         updateBasemapForZoom(
                             zoom
                         );
-
                         mapEl.view.watch(
                             "zoom",
                             (newZoom) => {
-
                                 if (
                                     !basemapSwitchingReady
                                 ) {
                                     return;
                                 }
-
                                 if (
                                     typeof newZoom !== "number" ||
                                     newZoom < 0
                                 ) {
                                     return;
                                 }
-
                                 console.log(
                                     "Zoom changed:",
                                     newZoom
@@ -490,34 +414,27 @@ setOpenStreetMap().catch(console.error);
           * ================================================================= */
 
         function isBufferedScoringLandmark( landmark ) {
-
             if (
                 !landmark ||
                 !landmark.attributes
             ) {
                 return false;
             }
-
             const activeLang =
                 currentLang();
-
             const nameField =
                 activeLang.landmarkNameField ||
                 "Name";
-
             const name =
                 String(
                     landmark.attributes[nameField] ||
                     ""
                 ).trim();
-
             return BUFFERED_SCORING_LANDMARKS.includes(
                 name
             );
         }
-
         function calculateBufferedPolygonScore( distanceMeters ) {
-
             if (
                 typeof distanceMeters !== "number" ||
                 !Number.isFinite(distanceMeters)
@@ -533,7 +450,6 @@ setOpenStreetMap().catch(console.error);
                 Math.ceil(
                     ( distanceMeters - 1000 ) / 1000
                 );
-
             const score =
                 10 - extraKilometers;
 
@@ -542,7 +458,6 @@ setOpenStreetMap().catch(console.error);
                 score
             );
         }
-
             /* =================================================================
              * PIN / SYMBOLS
              * ================================================================= */
@@ -550,7 +465,6 @@ setOpenStreetMap().catch(console.error);
             function makePinSymbol(
                 yoffset
             ) {
-
                 return {
                     type: "picture-marker",
                     url: PIN_IMAGE,
@@ -559,7 +473,6 @@ setOpenStreetMap().catch(console.error);
                     yoffset: yoffset,
                 };
             }
-
             const correctPointSymbol = {
                 type: "simple-marker",
                 style: "circle",
@@ -570,7 +483,6 @@ setOpenStreetMap().catch(console.error);
                     width: 3,
                 },
             };
-
             const correctAreaSymbol = {
                 type: "simple-fill",
                 color: [50, 205, 50, 0.3],
@@ -579,7 +491,6 @@ setOpenStreetMap().catch(console.error);
                     width: 2,
                 },
             };
-
             const incorrectAreaSymbol = {
                 type: "simple-fill",
                 color: [220, 20, 60, 0.3],
@@ -588,13 +499,10 @@ setOpenStreetMap().catch(console.error);
                     width: 2,
                 },
             };
-
             /* =================================================================
              * LANGUAGE
              * ================================================================= */
-
             function currentLang() {
-
                 return (
                     LANG_BY_CODE[
                         currentLanguage
@@ -602,15 +510,12 @@ setOpenStreetMap().catch(console.error);
                     DEFAULT_LANG
                 );
             }
-
             function t(
                 key,
                 replacements = {}
             ) {
-
                 const active =
                     currentLang();
-
                 let text =
                     (
                         active &&
@@ -623,21 +528,17 @@ setOpenStreetMap().catch(console.error);
                         DEFAULT_LANG.strings[key]
                     ) ||
                     key;
-
                 const values = {
                     appName:
                         CONFIG.appName || "",
-
                     url:
                         (
                             CONFIG.social &&
                             CONFIG.social.url
                         ) ||
                         "",
-
                     ...replacements,
                 };
-
                 for (
                     const [
                         placeholder,
@@ -4271,7 +4172,6 @@ if (
                                     ? 1
                                     : 0
                         );
-
                     endGame();
                 };
         }
