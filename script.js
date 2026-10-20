@@ -2224,7 +2224,10 @@ const imageUrl = getLandmarkPhoto( landmark );
     getCustomImagePosition(
         landmark
     );
-             
+       const imageScale =
+    getCustomImageScale(
+        landmark
+    );      
 updateFindLandmarkTextVisibility();
 
 if ( $("landmark-name") ) {
@@ -2288,11 +2291,20 @@ if ( $("landmark-name") ) {
                         };
 imageElements.image.style.objectPosition =
     imagePosition || "";
-                    imageElements.image.src =
-                        imageUrl;
 
-                    imageElements.image.alt =
-                        name;
+imageElements.image.style.transform =
+    imageScale
+        ? `scale(${imageScale})`
+        : "";
+
+imageElements.image.style.transformOrigin =
+    "center center";
+
+imageElements.image.src =
+    imageUrl;
+
+imageElements.image.alt =
+    name;
 
                 } else {
 
