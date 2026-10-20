@@ -1466,6 +1466,44 @@ function getCustomLandmarkPrompt(
 
     return null;
 }
+         function getCustomImageScale( landmark ) {
+    const scales =
+        CONFIG.customImageScales || {};
+
+    const name =
+        getLandmarkName(
+            landmark
+        );
+
+    const normalizedName =
+        String(
+            name || ""
+        )
+            .trim()
+            .toLowerCase();
+
+    for (
+        const [ key, value ] of Object.entries(
+            scales
+        )
+    ) {
+        const normalizedKey =
+            String(
+                key || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        if (
+            normalizedKey ===
+            normalizedName
+        ) {
+            return value;
+        }
+    }
+
+    return null;
+}
             function getLandmarkPhoto(
                 feature
             ) {
