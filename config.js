@@ -67,17 +67,17 @@ customImagePositions: {
     },
 
     "Vendene": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Lībava": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
     "Jaunākā UNESCO Pasaules mantojuma vieta Latvijā": {
-        fullScoreBufferMeters: 5000,
+        fullScoreBufferMeters: 0,
         penaltyStepMeters: 500,
     },
 
