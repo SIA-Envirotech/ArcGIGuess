@@ -43,6 +43,9 @@ customLandmarkPrompts: {
 customImagePositions: {
     "Jaunākā UNESCO Pasaules mantojuma vieta Latvijā": "center 80%",
 },
+    customImageScales: {
+    "Siksala (Teiču dabas rezervāts)": 1.15,
+},
     /* -------------------------------------------------------------------------
      * 3. SCORING
      * ---------------------------------------------------------------------- */
