@@ -3175,14 +3175,16 @@ async function saveRoundResultToArcGIS({
       features: JSON.stringify([feature])
     });
 
-    const response = await fetch(
-      ROUND_RESULTS_LAYER_URL.replace(/\/+$/, "") +
-        "/addFeatures",
-      {
-        method: "POST",
-        body: params
-      }
-    );
+   const requestUrl =
+  ROUND_RESULTS_LAYER_URL.trim().replace(/\/+$/, "") +
+  "/addFeatures";
+
+console.log("SAGLABĀŠANAS ADRESE:", requestUrl);
+
+const response = await fetch(requestUrl, {
+  method: "POST",
+  body: params
+});
 
     if (!response.ok) {
       throw new Error("HTTP kļūda: " + response.status);
