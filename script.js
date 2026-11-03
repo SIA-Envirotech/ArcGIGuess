@@ -37,7 +37,7 @@ $arcgis
             const LEADERBOARD =
                 CONFIG.leaderboard || {};
         const ROUND_RESULTS_LAYER_URL =
-  "https://services1.arcgis.com/qbu95DaOMntesDTa/arcgis/rest/services/MIn%C4%93jumi_skol%C4%93nu/FeatureServer/0";
+  "https://services1.arcgis.com/qbu95DaOMntesDTa/arcgis/rest/services/MIn%C4%93jumi_skol%C4%93nu/FeatureServer/40";
 
 let currentGameId = null;
 
