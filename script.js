@@ -36,6 +36,22 @@ $arcgis
 
             const LEADERBOARD =
                 CONFIG.leaderboard || {};
+         const ROUND_RESULTS_LAYER_URL =
+  "https://services1.arcgis.com/qbu95DaOMntesDTa/arcgis/rest/services/MIn%C4%93jumi_skol%C4%93nu/FeatureServer";
+
+let currentGameId = null;
+
+function getCurrentGameId() {
+  if (!currentGameId) {
+    currentGameId =
+      "game_" +
+      Date.now() +
+      "_" +
+      Math.random().toString(36).slice(2, 10);
+  }
+
+  return currentGameId;
+}
 
             const $ = (id) =>
                 document.getElementById(id);
@@ -2120,7 +2136,7 @@ currentBasemapType =
              * ================================================================= */
 
             function startGame() {
-
+currentGameId = null;
                 currentLandmarkIndex =
                     0;
 
@@ -3067,6 +3083,130 @@ function calculateCustomScore( distanceMeters, rule, scoring ) {
     return titles.veryFar ||
         "Nākreiz sanāks!";
 }
+         function getResultPoint(geometry) {
+  if (!geometry) {
+    return null;
+  }
+
+  if (geometry.type === "point") {
+    return geometry;
+  }
+
+  // Laukumam vai līnijai saglabā reprezentatīvu punktu.
+  // Tas nav obligāti precīzs punkts uz paša objekta.
+  return geometry.extent?.center || null;
+}
+
+async function saveRoundResultToArcGIS({
+  targetLandmark,
+  targetGeometry,
+  clickedPoint,
+  distanceInMeters,
+  roundScore
+}) {
+  try {
+    const guessPoint = getResultPoint(clickedPoint);
+    const correctPoint = getResultPoint(targetGeometry);
+
+    if (
+      !guessPoint ||
+      !correctPoint ||
+      !guessPoint.spatialReference ||
+      !correctPoint.spatialReference
+    ) {
+      throw new Error(
+        "Trūkst koordinātu vai koordinātu sistēmas."
+      );
+    }
+
+    if (
+      ![
+        guessPoint.x,
+        guessPoint.y,
+        correctPoint.x,
+        correctPoint.y
+      ].every(Number.isFinite)
+    ) {
+      throw new Error("Koordinātas nav derīgi skaitļi.");
+    }
+
+    const attrs = targetLandmark.attributes || {};
+
+    const landmarkId =
+      attrs[CONFIG.landmarkIdField || "FID"] ??
+      attrs.FID ??
+      attrs.OBJECTID ??
+      attrs.GlobalID ??
+      "";
+
+    const feature = {
+      attributes: {
+        game_id: getCurrentGameId(),
+
+        // Nosaukumi atbilstoši tavam jaunā slāņa attēlam.
+        landmark_i: String(landmarkId),
+        landmark_n: getLandmarkName(targetLandmark),
+
+        distance_m: Number.isFinite(distanceInMeters)
+          ? Math.round(distanceInMeters)
+          : null,
+
+        round_scor: roundScore,
+
+        guess_x: guessPoint.x,
+        guess_y: guessPoint.y,
+        correct_x: correctPoint.x,
+        correct_y: correctPoint.y,
+
+        created_at: Date.now()
+      },
+
+      // Kartē parāda spēlētāja klikšķi.
+      geometry: {
+        x: guessPoint.x,
+        y: guessPoint.y,
+        spatialReference:
+          guessPoint.spatialReference.toJSON()
+      }
+    };
+
+    const params = new URLSearchParams({
+      f: "json",
+      features: JSON.stringify([feature])
+    });
+
+    const response = await fetch(
+      ROUND_RESULTS_LAYER_URL.replace(/\/+$/, "") +
+        "/addFeatures",
+      {
+        method: "POST",
+        body: params
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP kļūda: " + response.status);
+    }
+
+    const data = await response.json();
+    const result = data.addResults?.[0];
+
+    if (data.error || result?.success !== true) {
+      console.error(
+        "Atbilde NAV saglabāta:",
+        JSON.stringify(data, null, 2)
+      );
+      return;
+    }
+
+    console.log(
+      "Atbilde saglabāta. OBJECTID:",
+      result.objectId
+    );
+  } catch (error) {
+    console.error("Saglabāšanas kļūda:", error);
+  }
+}
          function confirmGuess() {
 
                 if (
@@ -3307,7 +3447,13 @@ if ( gotFullPoints ) {
         0
     );
 }
-
+saveRoundResultToArcGIS({
+  targetLandmark,
+  targetGeometry,
+  clickedPoint,
+  distanceInMeters,
+  roundScore
+});
 totalScore +=
     roundScore;
 
